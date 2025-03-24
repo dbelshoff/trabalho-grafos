@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\Belshoff\Projects\UVV\teoria-dos-grafos\grafo-arvore-projeto\backend\venv
+set VIRTUAL_ENV=C:\Users\Belshoff\Projects\trabalho-grafos\grafo-arvore-projeto\trabalho-grafos\grafo-arvore-projeto\backend\venv
 
 if not defined PROMPT set PROMPT=$P$G
 

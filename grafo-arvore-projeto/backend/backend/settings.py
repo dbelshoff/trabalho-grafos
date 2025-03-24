@@ -28,6 +28,20 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+import os
+
+# Defina o diretório para armazenar as imagens geradas
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Adicione isso às suas URLs:
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns = [
+    # suas outras urls
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 # Application definition
 
 INSTALLED_APPS = [

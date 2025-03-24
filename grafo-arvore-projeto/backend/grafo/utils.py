@@ -1,3 +1,4 @@
+
 class No:
     def __init__(self, valor):
         self.valor = valor
@@ -30,21 +31,21 @@ class Grafo:
                     possiveis_raizes.remove(filho.valor)
         return self.grafo[possiveis_raizes.pop()] if len(possiveis_raizes) == 1 else None
 
-    def eh_arvore(self):
-        if not self.raiz:
-            return False
+    #def eh_arvore(self):
+    #    if not self.raiz:
+    #        return False
 
-        visitados = set()
-        def dfs(no):
-            if no.valor in visitados:
-                return False  # Encontrou ciclo
-            visitados.add(no.valor)
-            for filho in no.filhos:
-                if not dfs(filho):
-                    return False
-            return True
+    #    visitados = set()
+    #    def dfs(no):
+    #        if no.valor in visitados:
+    #            return False  # Encontrou ciclo
+    #        visitados.add(no.valor)
+    #        for filho in no.filhos:
+    #            if not dfs(filho):
+    #                return False
+    #        return True
 
-        return dfs(self.raiz) and len(visitados) == len(self.grafo)
+    #    return dfs(self.raiz) and len(visitados) == len(self.grafo)
 
     def eh_binaria(self):
         return all(len(no.filhos) <= 2 for no in self.grafo.values())
@@ -69,6 +70,49 @@ class Grafo:
 
     def eh_cheia(self):
         return all(len(no.filhos) in [0, 2] for no in self.grafo.values())
+    
+    def eh_bst(self, no=None, min_val=float('-inf'), max_val=float('inf')):
+        if not no:
+            no = self.raiz
+        if not self.eh_binaria():
+            return False  # Só faz sentido verificar BST em árvores binárias
+        if not (min_val < no.valor < max_val):
+            return False
+        left_check = self.eh_bst(no.filhos[0], min_val, no.valor) if len(no.filhos) > 0 else True
+        right_check = self.eh_bst(no.filhos[1], no.valor, max_val) if len(no.filhos) > 1 else True
+        return left_check and right_check
+
+    def eh_avl(self, no=None):
+        if not no:
+            no = self.raiz
+        if not self.eh_bst():
+            return False  # Uma AVL precisa ser uma BST primeiro
+
+        def altura_e_balanceada(no):
+            if not no:
+                return 0, True
+            altura_esq, balanceada_esq = altura_e_balanceada(no.filhos[0]) if len(no.filhos) > 0 else (0, True)
+            altura_dir, balanceada_dir = altura_e_balanceada(no.filhos[1]) if len(no.filhos) > 1 else (0, True)
+            balanceada = abs(altura_esq - altura_dir) <= 1
+            return 1 + max(altura_esq, altura_dir), balanceada and balanceada_esq and balanceada_dir
+
+        _, balanceada = altura_e_balanceada(self.raiz)
+        return balanceada
+
+    def tipo_arvore(self):
+        #if not self.eh_arvore():
+        #    return "Não é uma árvore"
+        if not self.eh_binaria():
+            return "Árvore não binária"
+        if self.eh_avl():
+            return "Árvore AVL (Balanceada)"
+        if self.eh_bst():
+            return "Árvore BST"
+        if self.eh_cheia():
+            return "Árvore binária cheia"
+        if self.eh_completa():
+            return "Árvore binária completa"
+        return "Árvore binária"
 
     def altura(self, no=None):
         if not no:
@@ -112,8 +156,8 @@ class Grafo:
         return resultado
 
     def caminhos(self):
-        if not self.eh_arvore():
-            return {"error": "Não é uma árvore"}
+        #if not self.eh_arvore():
+        #   return {"error": "Não é uma árvore"}
         
         if not self.eh_binaria():
             return {"error": "Árvore não é binária e nao possui caminhos"}
@@ -129,16 +173,6 @@ class Grafo:
             "em_ordem": em_ordem_result,
             "pos_ordem": pos_ordem_result
         }
-        
-    def tipo_arvore(self):
-        if not self.eh_arvore():
-            return "Não é uma árvore"
-        if not self.eh_binaria():
-            return "Árvore não binária"
-        """if self.eh_cheia() and self.eh_completa():
-            return "Árvore binária cheia e completa"""
-        if self.eh_cheia():
-            return "Árvore binária cheia"
-        if self.eh_completa():
-            return "Árvore binária completa"
-        return "Árvore binária"
+
+
+    

@@ -22,7 +22,7 @@ class UploadGrafoView(APIView):
 
             # Retorna a resposta com os dados calculados
             return Response({
-                "eh_arvore": grafo.eh_arvore(),
+                #"eh_arvore": grafo.eh_arvore(),
                 "tipo_arvore": grafo.tipo_arvore(),
                 "altura": grafo.altura(),
                 "caminhos": grafo.caminhos()
