@@ -67,9 +67,35 @@ class Grafo:
             fila.extend(no.filhos)
         
         return True
-
+    
+    
+    
     def eh_cheia(self):
-        return all(len(no.filhos) in [0, 2] for no in self.grafo.values())
+        # Fila para a busca em largura
+        fila = [(self.raiz, 0)]  # Cada item é uma tupla (nó, nível)
+        nivel_folhas = None  # Vamos armazenar o nível das folhas
+        while fila:
+            no, nivel = fila.pop(0)
+        
+            # Verifica se o nó é folha
+            if len(no.filhos) == 0:
+                # Se ainda não definimos o nível das folhas, definimos agora
+                if nivel_folhas is None:
+                    nivel_folhas = nivel
+                # Se o nível da folha não for o mesmo que o nível das outras folhas, não é cheia
+                elif nivel != nivel_folhas:
+                    return False
+            # Verifica se o nó interno tem exatamente 2 filhos
+            elif len(no.filhos) != 2:
+                return False
+        
+            # Adiciona os filhos à fila, incrementando o nível
+            for filho in no.filhos:
+                fila.append((filho, nivel + 1))
+    
+        return True
+
+
     
     def eh_bst(self, no=None, min_val=float('-inf'), max_val=float('inf')):
         if not no:

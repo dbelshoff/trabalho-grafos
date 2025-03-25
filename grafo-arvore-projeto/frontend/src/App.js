@@ -32,7 +32,7 @@ function App() {
   // Verifica se há nós duplicados dentro de uma mesma linha do arquivo. 
   // Para isso, percorre cada linha do arquivo, separa os valores por vírgula, 
   // remove espaços em branco e usa um conjunto (Set) para detectar duplicações.
-  const checkDuplicateNodesInLines = (lines) => {
+  /*const checkDuplicateNodesInLines = (lines) => {
     for (let line of lines) {
       const nodes = line.split(",").map((node) => node.trim());
       if (nodes.length !== new Set(nodes).size) {
@@ -40,7 +40,80 @@ function App() {
       }
     }
     return false;
+  };*/
+
+  const checkDuplicateNodesInLines = (lines) => {
+    let edges = new Set();
+    let adjList = {};
+    let usedAsChild = new Set(); // Conjunto para armazenar nós que já foram usados como filhos
+  
+    // Itera pelas linhas para construir o grafo e verificar duplicações de arestas
+    for (let line of lines) {
+      const nodes = line.split(",").map((node) => node.trim());
+  
+      const parent = nodes[0];
+      const children = nodes.slice(1);
+  
+      // Verifica se algum nó filho já foi utilizado como pai em uma linha anterior
+      for (let child of children) {
+        if (usedAsChild.has(child)) {
+          return true;  // Nó repetido como pai após já ter sido usado como filho
+        }
+        usedAsChild.add(child);  // Marca o nó como filho
+      }
+  
+      // Verifica duplicação de arestas dentro de cada linha
+      for (let i = 1; i < nodes.length; i++) {
+        const edge = `${nodes[i - 1]}-${nodes[i]}`;
+        const reverseEdge = `${nodes[i]}-${nodes[i - 1]}`;
+        
+        if (edges.has(edge) || edges.has(reverseEdge)) {
+          return true;  // Duplicação de aresta detectada
+        }
+  
+        edges.add(edge);
+      }
+  
+      // Atualiza a lista de adjacência
+      adjList[parent] = children;
+    }
+  
+    let visited = new Set();
+    let stack = new Set();
+  
+    // Função DFS para detectar ciclos
+    const dfs = (node) => {
+      if (stack.has(node)) return true;  // Se o nó já estiver no caminho, encontramos um ciclo
+      if (visited.has(node)) return false;  // Se já foi visitado, não há ciclo
+  
+      visited.add(node);
+      stack.add(node);
+  
+      if (adjList[node]) {
+        for (let neighbor of adjList[node]) {
+          if (dfs(neighbor)) return true;
+        }
+      }
+  
+      stack.delete(node);  // Remove o nó da pilha
+      return false;
+    };
+  
+    // Verifica se há ciclos no grafo
+    for (let node in adjList) {
+      if (!visited.has(node) && dfs(node)) {
+        return true;  // Ciclo detectado
+      }
+    }
+  
+    return false;  // Nenhum ciclo ou duplicação de aresta encontrada
   };
+  
+  
+
+  
+
+
 
   // Verifica se o grafo representado no arquivo está desconexo.
   // Constrói uma lista de adjacência para mapear conexões entre nós e usa uma busca em largura (BFS) para verificar a conectividade.
