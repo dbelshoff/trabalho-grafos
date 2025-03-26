@@ -32,22 +32,12 @@ function App() {
   // Verifica se há nós duplicados dentro de uma mesma linha do arquivo. 
   // Para isso, percorre cada linha do arquivo, separa os valores por vírgula, 
   // remove espaços em branco e usa um conjunto (Set) para detectar duplicações.
-  /*const checkDuplicateNodesInLines = (lines) => {
-    for (let line of lines) {
-      const nodes = line.split(",").map((node) => node.trim());
-      if (nodes.length !== new Set(nodes).size) {
-        return true;
-      }
-    }
-    return false;
-  };*/
-
-  const checkDuplicateNodesInLines = (lines) => {
+    const checkDuplicateNodesInLines = (lines) => {
     let edges = new Set();
     let adjList = {};
     let usedAsChild = new Set(); // Conjunto para armazenar nós que já foram usados como filhos
   
-    // Itera pelas linhas para construir o grafo e verificar duplicações de arestas
+    // Itera pelas linhas para verificar duplicações de arestas
     for (let line of lines) {
       const nodes = line.split(",").map((node) => node.trim());
   
@@ -99,7 +89,7 @@ function App() {
       return false;
     };
   
-    // Verifica se há ciclos no grafo
+    // Verifica se há ciclos no arquivo
     for (let node in adjList) {
       if (!visited.has(node) && dfs(node)) {
         return true;  // Ciclo detectado
@@ -108,11 +98,6 @@ function App() {
   
     return false;  // Nenhum ciclo ou duplicação de aresta encontrada
   };
-  
-  
-
-  
-
 
 
   // Verifica se o grafo representado no arquivo está desconexo.
@@ -150,57 +135,6 @@ function App() {
     return visited.size !== allNodes.size;
   };
 
-  // Verifica se a estrutura do arquivo contém ciclos ou arestas duplicadas.
-  // Primeiro, percorre as linhas e registra todas as conexões bidirecionais em um conjunto para evitar arestas repetidas.
-  // Depois, utiliza uma busca em profundidade (DFS) para detectar ciclos.
-  const checkCyclesAndDuplicateEdges = (lines) => {
-    let edges = new Set();
-    let adjList = {};
-
-    for (let line of lines) {
-      const nodes = line.split(",").map((node) => node.trim());
-
-      for (let i = 1; i < nodes.length; i++) {
-        const edge = `${nodes[i - 1]}-${nodes[i]}`;
-        if (edges.has(edge) || edges.has(`${nodes[i]}-${nodes[i - 1]}`)) {
-          return true;
-        }
-        edges.add(edge);
-      }
-
-      const parent = nodes[0];
-      const children = nodes.slice(1);
-      adjList[parent] = children;
-    }
-
-    let visited = new Set();
-    let stack = new Set();
-
-    const dfs = (node) => {
-      if (stack.has(node)) return true;
-      if (visited.has(node)) return false;
-
-      visited.add(node);
-      stack.add(node);
-
-      if (adjList[node]) {
-        for (let neighbor of adjList[node]) {
-          if (dfs(neighbor)) return true;
-        }
-      }
-
-      stack.delete(node);
-      return false;
-    };
-
-    for (let node in adjList) {
-      if (!visited.has(node) && dfs(node)) {
-        return true;
-      }
-    }
-
-    return false;
-  };
 
   // Converte os dados do arquivo para um formato adequado para visualização com a biblioteca react-d3-tree.
   // Cria um dicionário de nós e organiza suas relações de pai e filho com base nas linhas do arquivo.
@@ -223,7 +157,7 @@ function App() {
   };
 
   // Função chamada ao clicar no botão de envio. 
-  // Lê o arquivo, valida a estrutura do grafo, verifica erros e envia os dados para o backend caso tudo esteja correto.
+  // Lê o arquivo, valida a estrutura, verifica erros e envia os dados para o backend caso tudo esteja correto.
   const handleUpload = async () => {
     if (!file) {
       alert("Por favor, selecione um arquivo antes de enviar.");
@@ -236,6 +170,8 @@ function App() {
 
       if (!fileContent) {
         setError("O arquivo está vazio. Forneça um arquivo com dados.");
+        setTreeData(null);  // Limpar a árvore renderizada
+        setResult(null);     // Limpar os resultados
         return;
       }
 
@@ -244,21 +180,22 @@ function App() {
       const regex = /^[0-9,\s]+$/;
       if (!regex.test(fileContent)) {
         setError("O arquivo contém caracteres inválidos.");
+        setTreeData(null);  // Limpar a árvore renderizada
+        setResult(null);     // Limpar os resultados
         return;
       }
 
       if (checkDuplicateNodesInLines(lines)) {
-        setError("O arquivo contém nós duplicados.");
+        setError("O arquivo contém nós duplicados, ciclos ou arestas paralelas.");
+        setTreeData(null);  // Limpar a árvore renderizada
+        setResult(null);     // Limpar os resultados
         return;
       }
 
       if (checkDisconnection(lines)) {
-        setError("O arquivo representa um grafo disconexo.");
-        return;
-      }
-
-      if (checkCyclesAndDuplicateEdges(lines)) {
-        setError("O arquivo contém ciclos ou arestas paralelas.");
+        setError("O arquivo representa um grafo desconexo.");
+        setTreeData(null);  // Limpar a árvore renderizada
+        setResult(null);     // Limpar os resultados
         return;
       }
 
@@ -312,9 +249,12 @@ function App() {
 
   return (
     <div className="container">
-      <h1>Analisador de Árvores</h1>
+      <h1>Análise de Árvores</h1>
       <h2>Arquivos .txt com a seguinte estrutura:</h2>
-      <h3>#Raiz,Nós separados por virgula</h3>
+      <h2>Raiz,Nós separados por virgula</h2>
+      <h3>5,3,7</h3>
+      <h3>3,2,4</h3>
+      <h3>7,6,8</h3>
 
 
       {error && <div className="error">{error}</div>}

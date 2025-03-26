@@ -8,7 +8,7 @@ body {
 
 .container {
   max-width: 90%;
-  width: 1000px;
+  width: 100%;
   margin: 40px auto;
   background: white;
   padding: 20px;
@@ -18,6 +18,16 @@ body {
 
 h1 {
   color: #333;
+}
+
+h2 {
+  color: #333;
+  font-size: 12px;
+}
+
+h3{
+  color: #007bff;
+  font-size: 12px;
 }
 
 .file-input {
@@ -44,15 +54,16 @@ h1 {
   justify-content: space-between;
   align-items: flex-start;
   margin-top: 20px;
+  width: 100%;
 }
 
 .resultados {
-  width: 45%;
+  width: 30%;
   text-align: left;
 }
 
 .tree-container {
-  width: 50%;
+  width: 70%;
   height: 500px;
   border: 1px solid #ddd;
 }

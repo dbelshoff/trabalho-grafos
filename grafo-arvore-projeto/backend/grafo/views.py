@@ -25,7 +25,7 @@ class UploadGrafoView(APIView):
             texto = file.read().decode('utf-8')
             
             # Cria uma instância da classe Grafo passando o conteúdo do arquivo como argumento
-            # Presumivelmente, essa classe irá processar os dados e criar uma estrutura de grafo
+            # essa classe irá processar os dados e criar uma estrutura de grafo
             grafo = Grafo(texto)
 
             # Retorna uma resposta HTTP 200 (OK) com os dados processados do grafo
