@@ -34,21 +34,34 @@ class Grafo:
         return all(len(no.filhos) <= 2 for no in self.grafo.values())  # Verifica se todos os nós têm no máximo 2 filhos.
 
     def eh_completa(self):
-        if not self.eh_binaria():  # Se a árvore não for binária, não pode ser completa.
+        if not self.eh_binaria():  # Se não for binária, não pode ser completa
             return False
-        fila = [self.raiz]  # Fila para a busca em largura.
-        encontrou_folha = False  # Flag que indica se uma folha foi encontrada.
+
+        fila = [self.raiz]  # Fila para BFS (busca em largura)
+        encontrou_vazio = False  # Indica se encontramos um nó sem os dois filhos antes do fim
 
         while fila:
-            no = fila.pop(0)  # Retira o primeiro nó da fila.
-            if len(no.filhos) < 2:  # Se o nó tem menos de 2 filhos, é uma folha.
-                encontrou_folha = True  # Marca que uma folha foi encontrada.
-            elif encontrou_folha:  # Se já encontrou uma folha, e o nó atual não tem 2 filhos, não é completa.
-                return False
-            fila.extend(no.filhos)  # Adiciona os filhos do nó à fila.
-        
-        return True  # Se o loop terminou sem problemas, a árvore é completa.
+            no = fila.pop(0)
 
+            # Pegamos os filhos existentes
+            filhos = no.filhos
+
+            if len(filhos) == 2:
+                if encontrou_vazio:  # Se já encontramos um nó incompleto antes, não pode ser completa
+                    return False
+                fila.append(filhos[0])
+                fila.append(filhos[1])
+            elif len(filhos) == 1:
+                if encontrou_vazio:  # Se já encontramos um nó incompleto antes, não pode ser completa
+                    return False
+                fila.append(filhos[0])
+                encontrou_vazio = True  # Agora qualquer nó que vier deve estar incompleto
+            else:
+                encontrou_vazio = True  # Encontramos um nó sem filhos
+
+        return True  # Se passou por tudo sem problemas, a árvore é completa
+
+    
     def eh_cheia(self):
         if not self.eh_binaria():  # Se a árvore não for binária, não pode ser cheia.
             return False
