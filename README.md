@@ -1,3 +1,13 @@
+# Projeto executado por:
+
+Diogo Francis Belshoff
+Eduardo Godio Rodrigues
+Estevão da Silva Florencio
+Giovanni Persio Gonçalves
+Robert Lopes Terra
+Werisder Bertoli
+
+
 # Guia de Execução do Projeto  
 
 Este projeto consiste em um backend desenvolvido com **Django** e um frontend construído com **React**.  
