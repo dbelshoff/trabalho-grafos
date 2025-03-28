@@ -1,11 +1,11 @@
 # Projeto executado por:
 
-Diogo Francis Belshoff
-Eduardo Godio Rodrigues
-Estevão da Silva Florencio
-Giovanni Persio Gonçalves
-Robert Lopes Terra
-Werisder Bertoli
+Diogo Francis Belshoff, 
+Eduardo Godio Rodrigues, 
+Estevão da Silva Florencio, 
+Giovanni Persio Gonçalves, 
+Robert Lopes Terra, 
+Werisder Bertoli.
 
 
 # Guia de Execução do Projeto  
